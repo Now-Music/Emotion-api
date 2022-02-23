@@ -52,9 +52,9 @@ while cap.isOpened(): # True:
 
     faces = face_cascade.detectMultiScale(gray_image, scaleFactor=1.1, minNeighbors=5,
 			minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
-
+   
     for face_coordinates in faces:
-
+        
         x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
         gray_face = gray_image[y1:y2, x1:x2]
         try:
@@ -98,7 +98,7 @@ while cap.isOpened(): # True:
 
     bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
     cv2.imshow('window_frame', bgr_image)
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1)  == 27:
         break
 
 cap.release()
