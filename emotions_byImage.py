@@ -74,4 +74,3 @@ def get_emotion_by_image(image):
     emotion_list.sort(reverse=True)
     return [i[1 ]for i in emotion_list] # only return emotion_text
 
-print(get_emotion_by_image('./demo/images.jpg'))
