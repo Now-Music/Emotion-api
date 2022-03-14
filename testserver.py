@@ -4,7 +4,7 @@ app=Flask(__name__)
 
 @app.route('/test',methods=['POST'])
 def test():
-    print(request)
+    print(request.json)
     return "test"
 
 if __name__ == '__main__':

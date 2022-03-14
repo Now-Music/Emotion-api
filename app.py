@@ -64,7 +64,7 @@ def root():
 
 @app.route('/back',methods=['POST'])
 def back():
-    response = requests.post('http://192.168.0.2:5001/test',data=request.json['weather'])
+    response = requests.post('http://192.168.0.2:5001/test',json=request.json)
     if response.status_code==200: 
         return "success"
     else:
