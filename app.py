@@ -1,14 +1,10 @@
-from xml.etree.ElementTree import tostring
 from flask import Flask,request,jsonify
-from matplotlib.pyplot import get
 import emotions_byImage
 import base64
 import binascii
 import requests
 import json
-
-url = "http://192.168.0.14:8000"
-url2 ="http://192.168.0.11:8080"
+import config
 
 app = Flask(__name__)
 
@@ -18,29 +14,31 @@ def root():
     #img_data = b''
     #with open ("test.txt",'r') as fh:
     #    img_data = fh.read().encode('utf-8')
-    img_data = request.json['picture_base64'].encode('utf-8')
+    params = request.json['data'][0]
+    img_data = params['picture_base64'].encode('utf-8')
     try: 
-        weather_data = request.json['weather']
         with open("imageToSave.png", "wb") as fh:
             fh.write(base64.decodebytes(img_data))
         ret = emotions_byImage.get_emotion_by_image('imageToSave.png')
         datas = {
-            "weather" : request.json['weather'],
-            "month":request.json['month'],
+            "weather" : params['weather'],
+            "month":params['month'],
             "emotion" : ret[0],
-            "state": request.json['state'],
-            "genres": request.json['genres'],
-            "user_age":request.json['user_age'] 
+            "state": params['state'],
+            "genres": params['genres'],
+            "user_age":params['user_age'] 
         }
         print(datas)
-        response = requests.post(url,data = json.dumps(datas))
+        response = requests.post(config.URL1,data = json.dumps(datas))
+        print(response.json())
         if response.status_code==200:
-            requests.post(url2,data = response.json)
-            return "success"
+            print("back success")
+            return response.json()
         else:
             return "error"
 
     except KeyError:
+        print(KeyError)
         return jsonify({
             "status":202,
             "error" : "Accept",
@@ -60,17 +58,6 @@ def root():
             "error" : "Accept",
             "message" : "Wrong Base64",
         })
-
-
-@app.route('/back',methods=['POST'])
-def back():
-    response = requests.post('http://192.168.0.2:5001/test',json=request.json)
-    if response.status_code==200: 
-        return "success"
-    else:
-        return "error"
-    
-
 
 
 if __name__ == '__main__':
